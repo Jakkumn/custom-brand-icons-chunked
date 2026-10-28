@@ -86,7 +86,12 @@ jobs:
             echo "❌ dist/custom-brand-icons.js not found! Make sure the build workflow has run and committed it to main."
             exit 1
           fi
-          echo "✅ Found dist/custom-brand-icons.js"
+          CHUNKS=$(ls dist/cbi-*.js 2>/dev/null | wc -l)
+          if [ "$CHUNKS" -eq 0 ]; then
+            echo "❌ No dist/cbi-*.js chunks found! The entry alone is not a usable release."
+            exit 1
+          fi
+          echo "✅ Found dist/custom-brand-icons.js and $CHUNKS chunk(s)"
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
@@ -95,4 +100,6 @@ jobs:
           body: ${{ steps.body.outputs.BODY }}
           generate_release_notes: true
           make_latest: true
-          files: dist/custom-brand-icons.js
+          files: |
+            dist/custom-brand-icons.js
+            dist/cbi-*.js
