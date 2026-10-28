@@ -1,7 +1,7 @@
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/elax46/custom-brand-icons?style=for-the-badge)](https://github.com/elax46/custom-brand-icons/releases/latest)
 [![GitHub Downloads](https://img.shields.io/github/downloads/elax46/custom-brand-icons/total?style=for-the-badge)](https://github.com/elax46/custom-brand-icons/releases)
 [![MIT License][mit-shield]][mit-license]
-![GitHub file size in bytes](https://img.shields.io/github/size/elax46/custom-brand-icons/dist/custom-brand-icons.js?label=plugin%20size&style=for-the-badge)
+![GitHub file size in bytes](https://img.shields.io/github/size/elax46/custom-brand-icons/dist/custom-brand-icons.js?label=entry%20size&style=for-the-badge)
 ![GitHub last commit](https://img.shields.io/github/last-commit/elax46/custom-brand-icons?style=for-the-badge)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-yellow?style=for-the-badge&logo=buymeacoffee&logoColor=white)](https://www.buymeacoffee.com/elax46)
 
@@ -85,15 +85,20 @@ After installing through HACS:
 
 To add custom repositories please follow [this guide](https://hacs.xyz/docs/faq/custom_repositories/). Set URL to `` and category to `Lovelace`.
 
-1. Download `custom-brand-icons.js` file from the [latest release](/releases/latest).
-2. Copy the `custom-brand-icons.js` file into `<config>/www/` the directory where your `configuration.yaml` resides.
+> [!IMPORTANT]
+> The pack is now split across several files. If you are upgrading a manual
+> installation, replacing only `custom-brand-icons.js` will leave you with no
+> icons at all — download the chunks too.
+
+1. Download **all** the files attached to the [latest release](/releases/latest) — `custom-brand-icons.js` plus every `cbi-*.js` chunk.
+2. Copy them **all into the same directory**, `<config>/www/custom-brand-icons/`, creating it if needed. The entry file loads the chunks from alongside itself, so they must stay together.
 
 3. Add the following to the `frontend` section of your `configuration.yaml`
 
     ```yaml
     frontend:
       extra_module_url:
-        - /local/custom-brand-icons.js
+        - /local/custom-brand-icons/custom-brand-icons.js
     ```
 
 4. (Optional) YAML mode users. Add the following to your lovelace configuration using the Raw Config editor under Configure UI or ui-lovelace.yaml.
@@ -101,7 +106,7 @@ To add custom repositories please follow [this guide](https://hacs.xyz/docs/faq/
     ```yaml
     resources:
       - type: js
-        url: /local/custom-brand-icons.js
+        url: /local/custom-brand-icons/custom-brand-icons.js
     ```
 
 5. Restart Home Assistant.
@@ -233,9 +238,18 @@ If everything went well you will see a message like this
 
 ```js
 ✅ Build completed
-📁 Generated file: dist/custom-brand-icons.js
+📁 Generated: dist/custom-brand-icons.js + XX chunks
 🔢 Total icons: XXXX
+📦 Chunks: XX (target 32)
+📐 Chunk size: min XX.X KB · median XXX.X KB · max XXX.X KB
+🪶 Entry size: XX.X KB
+🧱 Chunk total: X.XX MB
+🔎 Icon finder bundle: docs-dist/custom-brand-icons.js XXXX.X KB
 ```
+
+The icon data lives in the `cbi-*.js` chunks, which the entry loads on demand: a page fetches only the chunks holding the icons it renders, so a dashboard using a handful of icons downloads a fraction of the set, while one using hundreds ends up fetching most of it. Keep the whole `dist/` directory together.
+
+`docs-dist/custom-brand-icons.js` is a separate single-file build of the same icons, used only by the [icon finder](https://elax46.github.io/custom-brand-icons/) page, which reads the whole set synchronously. It is not part of a release.
 
 (Optional) In case you want to create your own prefix you can edit the last line of the `custom-brand-icons.js`
 

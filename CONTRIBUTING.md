@@ -46,8 +46,13 @@ If everything went well you will see a message like this
 
 ```js
 ✅ Build completed
-📁 Generated file: dist/custom-brand-icons.js
+📁 Generated: dist/custom-brand-icons.js + XX chunks
 🔢 Total icons: XXXX
+📦 Chunks: XX (target 32)
+📐 Chunk size: min XX.X KB · median XXX.X KB · max XXX.X KB
+🪶 Entry size: XX.X KB
+🧱 Chunk total: X.XX MB
+🔎 Icon finder bundle: docs-dist/custom-brand-icons.js XXXX.X KB
 ```
 
 (Optional) In case you want to create your own prefix you can edit the last line of the `custom-brand-icons.js`

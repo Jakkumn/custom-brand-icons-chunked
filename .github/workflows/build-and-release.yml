@@ -62,6 +62,8 @@ jobs:
             echo "❌ Build failed: dist/custom-brand-icons.js not generated"
             exit 1
           fi
+          # Catch an incomplete dist/ before it is committed to main
+          npm run verify-dist
           echo "✅ Build completed successfully"
           echo "📂 dist content:"
           ls -la dist
@@ -71,7 +73,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           # Forza l'add anche dei file normalmente ignorati
-          git add -f dist icon-svg
+          git add -f dist docs-dist icon-svg
           if git diff --staged --quiet; then
             echo "ℹ️ No changes in dist or icon-svg"
             exit 0

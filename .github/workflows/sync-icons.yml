@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'dist/custom-brand-icons.js' # Trigger only when this specific file changes
+      - 'docs-dist/**' # The icon finder bundle
   workflow_dispatch: # Allows manual execution from the Actions tab
 
 jobs:
@@ -20,30 +20,33 @@ jobs:
           ref: iconfinder
           fetch-depth: 0 # Fetch all history to ensure access to other branches
 
-      # 2. Extract the specific file from the source branch (main)
-      - name: Get latest file from main branch
+      # 2. Extract the icon finder bundle from the source branch (main)
+      - name: Get latest finder bundle from main branch
         run: |
-          git checkout origin/main -- dist/custom-brand-icons.js
+          git checkout origin/main -- docs-dist/
+          # checkout stages what it fetches; unstage so only docs/ is committed
+          git reset -q -- docs-dist/
           
-      # 3. Move and rename the file into the docs/ directory
-      - name: Update file in docs folder
+      # 3. Move the bundle into the docs/ directory
+      - name: Update files in docs folder
         run: |
           mkdir -p docs
-          mv dist/custom-brand-icons.js docs/custom-brand-icons.js
+          rm -f docs/cbi-*.js
+          mv docs-dist/custom-brand-icons.js docs/custom-brand-icons.js
           # Clean up the source directory structure created by the checkout
-          rmdir dist || true 
+          rmdir docs-dist || true 
 
       # 4. Commit and Push the changes back to iconfinder branch
       - name: Commit and Push changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/custom-brand-icons.js
+          git add -A docs
           
           # Check if there are actual changes to commit to avoid errors
           if git diff --quiet && git diff --staged --quiet; then
             echo "No changes detected. Skipping commit."
           else
-            git commit -m "Automated sync: update custom-brand-icons.js from main"
+            git commit -m "Automated sync: update icon pack build output from main"
             git push origin iconfinder
           fi
