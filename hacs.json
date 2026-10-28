@@ -1,5 +1,6 @@
 {
     "name": "Custom brand icons",
     "render_readme": false,
-    "content_in_root": false
+    "content_in_root": false,
+    "filename": "custom-brand-icons.js"
 }
